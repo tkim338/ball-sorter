@@ -3,18 +3,21 @@ from puzzle_model import PuzzleModel
 import sys
 import random
 
-def solve(model):
-	solution = try_options(model)
-	return solution
+from graph_visualization import Graph
 
-def try_options(model):
+def equal_states(state0, state1):
+	return True
+
+def solve(model):
+	data_collection = list()
+
 	# bin_str = state_enc(bins)
 	bin_str = model.state
 	state_dict = {bin_str: []}
 	attempted_moves = {bin_str: []}
 	
-	for i in range(0,100):
-		print(f'search depth: {i}')
+	for i in range(0,1000):
+		# print(f'search depth: {i}')
 		new_state_dict = dict()
 		
 		for state_str in state_dict:
@@ -32,13 +35,22 @@ def try_options(model):
 					option_model.process_move(option)
 
 					if option_model.state not in new_state_dict:
+						# print(f'{parent_model.state}-{option}-{option_model.state}')
+						data_collection.append((parent_model.state, option, option_model.state))
+
 						new_state_dict[option_model.state] = state_dict[state_str] + [option]
 						if option_model.win_state:
+							# graph = Graph(data_collection[0:500])
+							graph = Graph(data_collection)
+							graph.print()
+							graph.show()
+
 							return new_state_dict[option_model.state]
 
 		state_dict = dict()
 		for new_state_str in new_state_dict:
 			state_dict[new_state_str] = new_state_dict[new_state_str]
+
 	return 'solution not found'
 
 if __name__ == "__main__":
@@ -49,6 +61,7 @@ if __name__ == "__main__":
 	print(model.bins)
 	print(model.win_state)
 
+	# print(model.to_string())
 	sol = solve(model)
 	for move in sol:
 		print(move)

@@ -134,3 +134,20 @@ class PuzzleModel:
 				if self.is_valid_move(o, d) and self.is_good_move(o, d):
 					options.append((o, d))
 		return options
+
+	def to_string(self):
+		output_string = str()
+
+		ind = self.max_vol - 1
+		while ind >= 0:
+			for key in self.bins:
+				if len(self.bins[key]) > ind:
+					# print(f'| {self.bins[key][ind]} ', end='')
+					output_string += f'| {self.bins[key][ind]} '
+				else:
+					# print('|    ', end='')
+					output_string += '|   '
+			# print('|')
+			output_string += '|\n'
+			ind -= 1
+		return output_string
