@@ -1,7 +1,12 @@
 import cv2
 
+image_bounds = ((500,1450), (100,1000))
+
 def process(image_loc):
-	edges = edge_detection(image_loc)
+	color_image = cv2.imread(image_loc)
+	color_image = color_image[image_bounds[0][0]:image_bounds[0][1], image_bounds[1][0]:image_bounds[1][1]]
+
+	edges = edge_detection(color_image)
 	blobs = blob_finder(edges)
 
 	full_size_blobs = list()
@@ -10,10 +15,7 @@ def process(image_loc):
 			full_size_blobs.append(blob)
 		
 	shape_dict = get_shapes(full_size_blobs)
-	color_dict = get_colors(shape_dict, image_loc)
-
-	color_image = cv2.imread(image_loc)
-	color_image = color_image[500:1450, 100:1000]
+	color_dict = get_colors(shape_dict, color_image)
 
 	tube_dict = dict()
 	index = 0
@@ -26,18 +28,13 @@ def process(image_loc):
 			ball_color = color_dict[(color_image[ball_center][0], color_image[ball_center][1], color_image[ball_center][2])]
 			if in_bounds(ball_center, tube_bounds):
 				tube_dict[index] = ball_color + tube_dict[index]
-
 		index += 1
 
 	return tube_dict
 
-def edge_detection(image_location):
-	# Read the original image
-	img = cv2.imread(image_location)
-	img = img[500:1450, 100:1000]
-
+def edge_detection(img_color):
 	# Convert to graycsale
-	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
 	# Blur the image for better edge detection
 	img_blur = cv2.GaussianBlur(img_gray, (3,3), 0) 
 
@@ -47,7 +44,6 @@ def edge_detection(image_location):
 
 def shape_classifier(blob):
 	# determines if blob is a 'tube' or a 'ball'
-
 	# based on ratio of height and width
 	x_min = 10000000
 	x_max = 0
@@ -134,17 +130,13 @@ def find_line(x, y, history, edge_image):
 		for cm in cached_members:
 			new_members.append(cm)
 
-
 	return line_members, edge_image
 
-def get_colors(shape_dict, image_loc):
+def get_colors(shape_dict, color_image):
 	# assign color codes (single letter) to RGB values found
 
 	color_dict = dict()
-
-	color_image = cv2.imread(image_loc)
-	color_image = color_image[500:1450, 100:1000]
-
+	
 	code = 97 # start on letter 'a'
 	for ball in shape_dict['ball']:
 		ball_coor = ball[0]
