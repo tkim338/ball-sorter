@@ -3,6 +3,7 @@ import image_processor
 import puzzle_solver
 from puzzle_model import PuzzleModel
 import copy
+import sys
 
 def policy_action(model, policy):
     max_reward = None
@@ -32,61 +33,59 @@ def get_action(model, policy, epsilon):
         return policy_action(model, policy)
 
 
-# input params
-gamma = 0.9
-alpha = 0.5
-epsilon = 0.3
-episodes = 1000
+if __name__ == "__main__":
+    print(sys.argv[1])
+    image_loc = sys.argv[1]
 
-# setup
-# env = gym.make('Taxi-v3').unwrapped
-tube_dict = image_processor.process('/Users/tkim/Downloads/bs3.png')
-print(tube_dict)
-model = PuzzleModel(tube_dict)
-# pol = numpy.zeros((env.nS, env.nA))
-policy = dict()
+    # input params
+    gamma = 0.9
+    alpha = 0.5
+    epsilon = 0.3
+    episodes = 3000
 
-for e in range(episodes):
-    print(e)
-    # env.reset()
+    # setup
+    # env = gym.make('Taxi-v3').unwrapped
+    tube_dict = image_processor.process(image_loc)
+    print(tube_dict)
     model = PuzzleModel(tube_dict)
-    
-    reward = 0
-    next_action = get_action(model, policy, epsilon)
-    completed = False
-    while not completed: # and reward > -20:
-        prev_state = copy.deepcopy(model.state)
-        prev_action = copy.deepcopy(next_action)
-        # None, reward, completed, None = env.step(next_action)  # act(epsilon, env, next_action)
-        model.process_move(next_action)
-        if model.win_state:
-            reward = 1
-        elif model.stuck_state:
-            reward = -1
-        else:
-            reward = 0
-        completed = model.win_state or model.stuck_state
+    # pol = numpy.zeros((env.nS, env.nA))
+    policy = dict()
 
-        if not completed:
-            next_action = get_action(model, policy, epsilon)
+    for e in range(episodes):
+        if e % 100 == 0:
+            print(e)
+        # env.reset()
+        model = PuzzleModel(tube_dict)
+        
+        reward = 0
+        next_action = get_action(model, policy, epsilon)
+        completed = False
+        while not completed: # and reward > -20:
+            prev_state = copy.deepcopy(model.state)
+            prev_action = copy.deepcopy(next_action)
+            # None, reward, completed, None = env.step(next_action)  # act(epsilon, env, next_action)
+            model.process_move(next_action)
+            if model.win_state:
+                reward = 1
+            elif model.stuck_state:
+                reward = -1
+            else:
+                reward = 0
+            completed = model.win_state or model.stuck_state
 
-        # update policy[state][action]
-        # if prev_state not in policy:
-        #     policy[prev_state] = dict()
-        # if prev_action not in policy[prev_state]:
-        #     policy[prev_state][prev_action] = 0
+            if not completed:
+                next_action = get_action(model, policy, epsilon)
+                fixed_action = get_action(model, policy, 0.0)
+                policy[prev_state][prev_action] += alpha*(reward+gamma*policy[model.state][fixed_action] - policy[prev_state][prev_action])
 
-            fixed_action = get_action(model, policy, 0.0)
-        # if model.state not in policy:
-        #     policy[model.state] = dict()
-        # if fixed_action not in policy[model.state]:
-        #     policy[model.state][fixed_action] = 0
+            else:
+                policy[prev_state][prev_action] += alpha*(reward - policy[prev_state][prev_action])
 
-        # policy[prev_s][prev_action] += alpha*(reward + gamma*policy[env.s][get_action(env, policy, 0.0)] - policy[prev_s][prev_action])
-            policy[prev_state][prev_action] += alpha*(reward+gamma*policy[model.state][fixed_action] - policy[prev_state][prev_action])
+    # show optimal policy
+    model = PuzzleModel(tube_dict)
+    while not model.win_state or not model.stuck_state:
+        action = get_action(model, policy, 0.0)
+        print(action)
+        model.process_move(action)
 
-        else:
-            policy[prev_state][prev_action] += alpha*(reward - policy[prev_state][prev_action])
-
-print(model.bins)
-print('done')
+    print('done')
