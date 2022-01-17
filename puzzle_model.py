@@ -2,10 +2,16 @@ class PuzzleModel:
 
 	def __init__(self, bins):
 		self.max_vol = 4
-		self.bins = bins
+
+		if type(bins) == dict:
+			self.bins = bins
+			self.state = self.state_enc()
+		else:
+			self.bins = self.state_unenc(bins)
+			self.state = bins
+
 		self.win_state = self.check_win()
 		self.stuck_state = False
-		self.state = self.state_enc()
 
 	def is_bin_complete(self, b):
 		if len(b) != self.max_vol and len(b) != 0:
@@ -81,16 +87,16 @@ class PuzzleModel:
 			state_str += tube + (self.max_vol-len(tube)) * '*'
 		return state_str
 
-	# def state_unenc(self, state_str):
-	# 	state = dict()
-	# 	index = 0
-	# 	while len(state_str) > 0:
-	# 		tube = state_str[0:4]
-	# 		tube = tube.replace('*', '')
-	# 		state[index] = tube
-	# 		state_str = state_str[4:]
-	# 		index += 1
-	# 	return state
+	def state_unenc(self, state_str):
+		state = dict()
+		index = 0
+		while len(state_str) > 0:
+			tube = state_str[0:4]
+			tube = tube.replace('*', '')
+			state[index] = tube
+			state_str = state_str[4:]
+			index += 1
+		return state
 
 	def all_one_color(self, tube, color):
 		count = 0
