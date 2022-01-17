@@ -1,6 +1,8 @@
 import cv2
 
-image_bounds = ((500,1450), (100,1000))
+# image_bounds = ((500,1450), (100,1000))
+# [350:1550, 80:1000]
+image_bounds = ((350,1550), (80,1000))
 
 def process(image_loc):
 	color_image = cv2.imread(image_loc)
