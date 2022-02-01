@@ -3,8 +3,6 @@ from puzzle_model import PuzzleModel
 import sys
 import random
 
-from graph_visualization import Graph
-
 def equal_states(state0, state1):
 	return True
 
@@ -40,11 +38,6 @@ def solve(model):
 
 						new_state_dict[option_model.state] = state_dict[state_str] + [option]
 						if option_model.win_state:
-							# graph = Graph(data_collection[0:500])
-							# graph = Graph(data_collection)
-							# graph.print()
-							# graph.show()
-
 							return new_state_dict[option_model.state]
 
 		state_dict = dict()
