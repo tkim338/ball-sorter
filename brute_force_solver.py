@@ -17,7 +17,7 @@ def solve(model):
 	attempted_moves = {bin_str: []}
 	
 	for i in range(0,1000):
-		# print(f'search depth: {i}')
+		print(f'search depth: {i}')
 		new_state_dict = dict()
 		
 		for state_str in state_dict:
@@ -41,9 +41,9 @@ def solve(model):
 						new_state_dict[option_model.state] = state_dict[state_str] + [option]
 						if option_model.win_state:
 							# graph = Graph(data_collection[0:500])
-							graph = Graph(data_collection)
-							graph.print()
-							graph.show()
+							# graph = Graph(data_collection)
+							# graph.print()
+							# graph.show()
 
 							return new_state_dict[option_model.state]
 
