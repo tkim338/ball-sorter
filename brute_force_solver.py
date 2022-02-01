@@ -7,9 +7,6 @@ def equal_states(state0, state1):
 	return True
 
 def solve(model):
-	data_collection = list()
-
-	# bin_str = state_enc(bins)
 	bin_str = model.state
 	state_dict = {bin_str: []}
 	attempted_moves = {bin_str: []}
@@ -33,9 +30,6 @@ def solve(model):
 					option_model.process_move(option)
 
 					if option_model.state not in new_state_dict:
-						# print(f'{parent_model.state}-{option}-{option_model.state}')
-						data_collection.append((parent_model.state, option, option_model.state))
-
 						new_state_dict[option_model.state] = state_dict[state_str] + [option]
 						if option_model.win_state:
 							return new_state_dict[option_model.state]
