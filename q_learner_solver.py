@@ -1,6 +1,5 @@
 import numpy
 import image_processor
-import puzzle_solver
 from puzzle_model import PuzzleModel
 import copy
 import sys
