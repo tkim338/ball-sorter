@@ -7,6 +7,8 @@ def equal_states(state0, state1):
 	return True
 
 def solve(model):
+	state_history = list()
+
 	bin_str = model.state
 	state_dict = {bin_str: []}
 	attempted_moves = {bin_str: []}
@@ -31,8 +33,12 @@ def solve(model):
 					option_model.process_move(option)
 
 					if option_model.state not in state_dict and option_model.state not in new_state_dict:
+						state_history.append(option_model.state)
 						new_state_dict[option_model.state] = state_dict[parent_model.state] + [option]
 						if option_model.win_state:
+							with open('outputs/history.txt', 'w') as f:
+								f.write(str(state_history))
+								f.close()
 							return new_state_dict[option_model.state]
 
 		for new_state_str in new_state_dict:
