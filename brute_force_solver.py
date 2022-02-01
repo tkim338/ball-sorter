@@ -23,18 +23,18 @@ def solve(model):
 				if state_str not in attempted_moves:
 					attempted_moves[state_str] = []
 				if option not in attempted_moves[state_str]:
+					# try this option
 					attempted_moves[state_str].append(option)
 	
 					# check to see if state was reached before
 					option_model = PuzzleModel(parent_model.state)
 					option_model.process_move(option)
 
-					if option_model.state not in new_state_dict:
-						new_state_dict[option_model.state] = state_dict[state_str] + [option]
+					if option_model.state not in state_dict and option_model.state not in new_state_dict:
+						new_state_dict[option_model.state] = state_dict[parent_model.state] + [option]
 						if option_model.win_state:
 							return new_state_dict[option_model.state]
 
-		state_dict = dict()
 		for new_state_str in new_state_dict:
 			state_dict[new_state_str] = new_state_dict[new_state_str]
 
