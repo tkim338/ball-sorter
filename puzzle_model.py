@@ -98,6 +98,14 @@ class PuzzleModel:
 			index += 1
 		return state
 
+	def state_set(self):
+		state_str = self.state_enc()
+	    state_set = set()
+	    
+	    for i in range(0, len(state_str), 4):
+	        state_set.add(state_str[i:i+4])
+	    return state_set
+
 	def all_one_color(self, tube, color):
 		count = 0
 		for ball in tube:
