@@ -7,7 +7,7 @@ def equal_states(state0, state1):
 	return True
 
 def solve(model):
-	state_history = list()
+	state_history = [model.state_set()]
 
 	bin_str = model.state
 	state_dict = {bin_str: []}
@@ -32,8 +32,11 @@ def solve(model):
 					option_model = PuzzleModel(parent_model.state)
 					option_model.process_move(option)
 
-					if option_model.state not in state_dict and option_model.state not in new_state_dict:
-						state_history.append(option_model.state)
+					# if option_model.state not in state_dict and option_model.state not in new_state_dict:
+					if option_model.state_set() not in state_history:
+						# state_history.append(option_model.state)
+						state_history.append(option_model.state_set())
+
 						new_state_dict[option_model.state] = state_dict[parent_model.state] + [option]
 						if option_model.win_state:
 							with open('outputs/history.txt', 'w') as f:

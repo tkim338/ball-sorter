@@ -100,11 +100,11 @@ class PuzzleModel:
 
 	def state_set(self):
 		state_str = self.state_enc()
-	    state_set = set()
-	    
-	    for i in range(0, len(state_str), 4):
-	        state_set.add(state_str[i:i+4])
-	    return state_set
+		state_set = set()
+		
+		for i in range(0, len(state_str), 4):
+			state_set.add(state_str[i:i+4])
+		return state_set
 
 	def all_one_color(self, tube, color):
 		count = 0
@@ -153,7 +153,7 @@ class PuzzleModel:
 					# print(f'| {self.bins[key][ind]} ', end='')
 					output_string += f'| {self.bins[key][ind]} '
 				else:
-					# print('|    ', end='')
+					# print('|	', end='')
 					output_string += '|   '
 			# print('|')
 			output_string += '|\n'
