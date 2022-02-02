@@ -18,8 +18,8 @@ def solve(model):
 		for state_str in state_dict:
 			parent_model = PuzzleModel(state_str)
 			options = parent_model.get_options()
-			if len(options) <= 0:
-				state_str_to_remove.append(state_str)
+
+			has_path = False
 
 			for option in options:
 				# check if move was tried before
@@ -35,6 +35,7 @@ def solve(model):
 
 					# if option_model.state not in state_dict and option_model.state not in new_state_dict:
 					if option_model.state_set() not in state_history:
+						has_path = True
 						# state_history.append(option_model.state)
 						state_history.append(option_model.state_set())
 
@@ -44,6 +45,9 @@ def solve(model):
 								f.write(str(state_history))
 								f.close()
 							return new_state_dict[option_model.state]
+
+			if has_path == False:
+				state_str_to_remove.append(state_str)
 
 		for state_to_remove in state_str_to_remove:
 			state_dict.pop(state_to_remove, None)
