@@ -11,12 +11,16 @@ def solve(model):
 	attempted_moves = {bin_str: []}
 	
 	for i in range(0,1000):
-		print(f'search depth: {i}')
+		print(f'search depth: {i}. Trying {len(state_dict.keys())} states.')
 		new_state_dict = dict()
 		
+		state_str_to_remove = list()
 		for state_str in state_dict:
 			parent_model = PuzzleModel(state_str)
 			options = parent_model.get_options()
+			if len(options) <= 0:
+				state_str_to_remove.append(state_str)
+
 			for option in options:
 				# check if move was tried before
 				if state_str not in attempted_moves:
@@ -41,6 +45,8 @@ def solve(model):
 								f.close()
 							return new_state_dict[option_model.state]
 
+		for state_to_remove in state_str_to_remove:
+			state_dict.pop(state_to_remove, None)
 		for new_state_str in new_state_dict:
 			state_dict[new_state_str] = new_state_dict[new_state_str]
 
