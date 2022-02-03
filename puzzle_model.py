@@ -132,6 +132,10 @@ class PuzzleModel:
 				if i != origin and i != dest:
 					if self.all_one_color(self.bins[i], self.bins[origin][-1]):
 						return False
+
+		# a tube with all the same color ball should not move to an empty tube
+		if self.all_one_color(self.bins[origin], self.bins[origin][-1]) and len(self.bins[dest]) == 0:
+			return False
 		
 		return True
 

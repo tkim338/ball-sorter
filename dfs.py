@@ -6,7 +6,7 @@ import random
 def dfs_search(model, state_history, path):
 	# state_history = [model.state_set()]
 	for i in range(0,100):
-		print(f'Paths checked: {i}.')
+		print(f'Path length: {len(path)}. Paths checked: {i}.')
 
 		if model.state_set() not in state_history:
 			state_history.append(model.state_set())
