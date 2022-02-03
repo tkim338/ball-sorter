@@ -3,6 +3,29 @@ from puzzle_model import PuzzleModel
 import sys
 import random
 
+def dfs_search(model, state_history, path):
+	# state_history = [model.state_set()]
+	for i in range(0,100):
+		print(f'Paths checked: {i}.')
+
+		if model.state_set() not in state_history:
+			state_history.append(model.state_set())
+			options = model.get_options()
+			for option in options:
+				# attempt option
+				option_model = PuzzleModel(model.state)
+				option_model.process_move(option)
+				if option_model.win_state == True:
+					return True, state_history, path+[option]
+				else:
+					won, state_history, p = dfs_search(option_model, state_history, path+[option])
+					if won:
+						return True, state_history, p
+			# no options for this model
+		# model state set already checked
+	# path limit reached
+	return False, state_history, path
+
 def solve(model):
 	state_history = [model.state_set()]
 
@@ -65,6 +88,10 @@ if __name__ == "__main__":
 	print(model.win_state)
 
 	# print(model.to_string())
-	sol = solve(model)
+	# sol = solve(model)
+	# for move in sol:
+	# 	print(move)
+
+	win_state, history, sol = dfs_search(model, list(), list())
 	for move in sol:
 		print(move)
